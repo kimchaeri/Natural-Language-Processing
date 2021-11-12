@@ -1,4 +1,4 @@
-# 딥러닝 프레임워크 수업 실습
+# Natural Language Processing(NLP)수업 실습
 ## preprocessing1
 전처리1
 ## preprocessing2
