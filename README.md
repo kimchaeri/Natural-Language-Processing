@@ -52,11 +52,17 @@ from nltk.corpus import stopwords
 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
 3. 결측값(null), 중복값 제거
 4. 전처리
+
 4-(1). 토큰화
+
 4-(2). 품사 태깅
+
 4-(3). 명사 추출
+
 4-(4). 표제어 추출(Lemmatization)
+
 4-(5). 불용어(stop words) 제거
+
 5. 문서를 숫자 벡터로 변환(Bag of Words)
 6. 지도 
 ## Word2Vec
