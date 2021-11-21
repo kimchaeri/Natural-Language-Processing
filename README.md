@@ -20,7 +20,8 @@
 단어의 뿌리를 찾는 것(실제 단어 형태)
 
 + 사용 라이브러리
-영어 단어 토큰화
+
+- 영어 단어 토큰화
 ``` 
 import nltk
 from nltk.tokenize import word_tokenize as wt 
@@ -29,7 +30,7 @@ from nltk.stem import WordNetLemmatizer as lemma #표제어 추출
 from nltk.stem import PorterStemmer as stemming #어간 추출
 ``` 
 
-한국어 전처리
+- 한국어 전처리
 ```
 import konlpy
 from konlpy.tag import Kkma
