@@ -25,7 +25,18 @@
 import nltk
 from nltk.tokenize import word_tokenize as wt 
 from nltk.tokenize import WordPunctTokenizer ##모든 구두점을 단위로 분해
+from nltk.stem import WordNetLemmatizer as lemma #표제어 추출
+from nltk.stem import PorterStemmer as stemming #어간 추출
 ``` 
+
+한국어 전처리
+```
+import konlpy
+from konlpy.tag import Kkma
+from konlpy.tag import Okt
+from konlpy.tag import Hannanum
+from konlpy.tag import Komoran
+```
 ## preprocessing2
 ## Spam Email Text Data Analysis
 ## Word2Vec
