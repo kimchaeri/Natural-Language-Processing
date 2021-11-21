@@ -166,4 +166,85 @@ print('LR_balanced',balanced_accuracy_score(test_y,LR_test_pred))
 print('##############################################################')
 ```
 ## Word2Vec
+#### 1. 라이브러리 호출
+``` Python
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+import re
+import time
+import nltk
+from nltk.tokenize import word_tokenize
+from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
+``` 
+#### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
+``` Python
+data_path = r'C:/Users/user/Desktop/딥러닝프레임워크_박성호/spam.csv'
+data = pd.read_csv(data_path,encoding='latin1')
+
+``` 
+#### 3. 결측값(null), 중복값 제거
+``` Python
+data.drop_duplicates(subset=['des'],inplace=True, keep='first') #ex.3개가 중복되었을 때 첫 번째것만 남기고 나머지 제거(keep='first') #last or False
+``` 
+#### 4. 전처리
+  4-(1). 대문자->소문자
+
+  4-(2). 특수 기호, 구두점 제거
+
+  4-(3). 토큰화
+
+``` Python
+#(1)
+#대문자->소문자
+#특수기호 구두점 등 제거
+
+normalized_text=[] #전처리된 텍스트
+
+for string in data['des']:
+    tokens=re.sub(r"[^a-z0-9]+"," ",string.lower()) #대문자를 소문자로 바꾼후, 스팸이메일에서 소문자영어나 숫자가 아닌경우 빈 공간으로
+    normalized_text.append(tokens)
+    
+#(2)
+#단어 토큰화
+
+#normalized_text에서 각각의 이메일을 sentence로 받아서 work_tokenize시키겠다는 것
+result=[word_tokenize(sentence) for sentence in normalized_text]
+```
+#### 5. Word2Vec 알고리즘 학습 및 실행 by gensim
+``` Python
+#size=embedding 차원
+#window=문맥 크기
+#min_count=단어 최소 빈도 수 제한 (빈도가 적은 단어들은)
+#workers=학습을 위한 프로세스 수
+#sg=0은 CBOW, 1은 Skip-gram
+#size:100개 짜리의 벡터 크기로 요약
+#window:양 옆에 다섯개씩을 보겠다는 것
+
+model2=Word2Vec(sg=0,size=100,window=5,min_count=1,workers=4)
+model2.build_vocab(sentences=result)
+```
+#### 6. Pretrained된 모델 사용, Transfer Learning
+``` Python
+import urllib.request
+urllib.request.urlretrieve("https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz",filename="GoogleNews-vectors-negative300.bin.gz")
+
+#Fine Tuning할 새로운 Word2Vec 모델 생성
+#PreTrainedKeyvector와 vector_size'가 같은 word2vec model을 생성
+TransferedModel2=Word2Vec(size=PreTrainedKeyvector.vector_size,min_count=1)
+
+#단어 생성(build_vocab) by PreTrainedKeyvector word Vocabulary
+#TransferedModel.build_vocab input:
+#[[]] #list of list
+TransferedModel2.build_vocab([PreTrainedKeyvector.vocab.keys()])
+
+#주어진 데이터로 새로운 모델의 단어 추가
+#update parameter를 True로 설정
+TransferedModel2.build_vocab(result,update=True)
+
+#새로운 데이터들의 단어(토큰) 기반 fine tuning->Training
+TransferedModel2.train(result,total_examples=len(result),epochs=1)
+```
 
