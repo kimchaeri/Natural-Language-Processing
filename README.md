@@ -19,6 +19,13 @@
 문법적으로 다양한 형태의 변종을 단순화 시키는 작업
 단어의 뿌리를 찾는 것(실제 단어 형태)
 
++ 사용 라이브러리
+영어 단어 토큰화
+``` 
+import nltk
+from nltk.tokenize import word_tokenize as wt 
+from nltk.tokenize import WordPunctTokenizer ##모든 구두점을 단위로 분해
+``` 
 ## preprocessing2
 ## Spam Email Text Data Analysis
 ## Word2Vec
