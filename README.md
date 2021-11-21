@@ -38,6 +38,14 @@ from konlpy.tag import Hannanum
 from konlpy.tag import Komoran
 ```
 ## preprocessing2
++ 불용어(stopwords) 처리
+
+유의미한 토큰만을 선별하기 위한 작업
+
++ 영어 불용어 리스트 불러오기
+``` 
+from nltk.corpus import stopwords
+``` 
 ## Spam Email Text Data Analysis
 ## Word2Vec
 
