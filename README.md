@@ -31,7 +31,7 @@ from nltk.stem import PorterStemmer as stemming #어간 추출
 ``` 
 
 -한국어 전처리
-```
+``` Python
 import konlpy
 from konlpy.tag import Kkma
 from konlpy.tag import Okt
@@ -129,7 +129,7 @@ TF=CountVectorizer() #각 텍스트에서 단어 출현 횟수를 카운팅한 �
 TF_matrix=TF.fit_transform(new_str_emails3) #코퍼스로부터 각 단어의 빈도 수를 기록
 ```
 #### 6. 지도 학습
-```
+``` Python
 from sklearn.model_selection import train_test_split
 
 train_x, test_x, train_y, test_y = train_test_split(TF_matrix.drop(['Y'],axis=1),TF_matrix['Y'],test_size=0.30, stratify=Y, random_state=2313, shuffle=True)
