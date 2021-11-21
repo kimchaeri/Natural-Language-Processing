@@ -49,10 +49,70 @@ from nltk.corpus import stopwords
 ``` 
 ## Spam Email Text Data Analysis
 #### 1. 라이브러리 호출
+``` 
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+``` 
 #### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
-#### 3. 결측값(null), 중복값 제거
-#### 4. 전처리
+``` 
+data_path = r'C:/Users/user/Desktop/딥러닝프레임워크_박성호/spam.csv'
+data = pd.read_csv(data_path,encoding='latin1')
 
+``` 
+#### 3. 결측값(null), 중복값 제거
+``` 
+data.drop_duplicates(subset=['des'],inplace=True, keep='first') #ex.3개가 중복되었을 때 첫 번째것만 남기고 나머지 제거(keep='first') #last or False
+``` 
+#### 4. 전처리
+``` 
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import WordPunctTokenizer
+from nltk.tokenize import TreebankWordTokenizer
+from nltk.tag import pos_tag
+from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
+from nltk.corpus import stopwords
+from wordcloud import STOPWORDS
+
+i=1
+new_emails=[]
+final_tokens=[]
+
+for email in emails:
+    #(1) Tokenize
+    tokens=tokenizer.tokenize(email)
+    
+    #(1-1) lower
+    tokens=[word.lower() for word in tokens]
+    
+    #(2) Pos tagging
+    pos_results=pos_tag(tokens)
+    
+    #(3) Noun Extract
+    #lemma_noun=list()
+    #stem_noun=list()
+    
+    temp_tokens=[]
+    for word, tag in pos_results:
+        
+        #(4) lemma tizing
+        lemma=Lemmatizer.lemmatize(word)
+        
+        #(5) stop word
+        if lemma not in stop_words:
+            final_tokens.append(lemma)
+            temp_tokens.append(lemma)
+    new_emails.append(temp_tokens)
+    if i%100==0:
+        print(i)
+        
+    i+=1
+```
   4-(1). 토큰화
 
   4-(2). 품사 태깅
@@ -64,6 +124,6 @@ from nltk.corpus import stopwords
   4-(5). 불용어(stop words) 제거
 
 #### 5. 문서를 숫자 벡터로 변환(Bag of Words)
-#### 6. 지도 
+#### 6. 지도 학습
 ## Word2Vec
 
