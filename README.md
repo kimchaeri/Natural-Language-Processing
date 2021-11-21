@@ -48,8 +48,8 @@ from konlpy.tag import Komoran
 from nltk.corpus import stopwords
 ``` 
 ## Spam Email Text Data Analysis
-###1. 라이브러리 호출
-###2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
+### 1. 라이브러리 호출
+### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
 3. 결측값(null), 중복값 제거
 4. 전처리
 
