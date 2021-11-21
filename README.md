@@ -22,7 +22,7 @@
 #### 사용 라이브러리
 
 -영어 단어 토큰화
-``` 
+``` Python
 import nltk
 from nltk.tokenize import word_tokenize as wt 
 from nltk.tokenize import WordPunctTokenizer ##모든 구두점을 단위로 분해
@@ -44,12 +44,12 @@ from konlpy.tag import Komoran
 유의미한 토큰만을 선별하기 위한 작업
 
 #### 영어 불용어 리스트 불러오기
-``` 
+``` Python
 from nltk.corpus import stopwords
 ``` 
 ## Spam Email Text Data Analysis
 #### 1. 라이브러리 호출
-``` 
+``` Python
 import os
 import numpy as np
 import pandas as pd
@@ -58,13 +58,13 @@ import seaborn as sns
 %matplotlib inline
 ``` 
 #### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
-``` 
+``` Python
 data_path = r'C:/Users/user/Desktop/딥러닝프레임워크_박성호/spam.csv'
 data = pd.read_csv(data_path,encoding='latin1')
 
 ``` 
 #### 3. 결측값(null), 중복값 제거
-``` 
+``` Python
 data.drop_duplicates(subset=['des'],inplace=True, keep='first') #ex.3개가 중복되었을 때 첫 번째것만 남기고 나머지 제거(keep='first') #last or False
 ``` 
 #### 4. 전처리
@@ -77,7 +77,7 @@ data.drop_duplicates(subset=['des'],inplace=True, keep='first') #ex.3개가 중�
   4-(4). 표제어 추출(Lemmatization)
 
   4-(5). 불용어(stop words) 제거
-``` 
+``` Python
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import WordPunctTokenizer
@@ -123,7 +123,7 @@ for email in emails:
     i+=1
 ```
 #### 5. 문서를 숫자 벡터로 변환(Bag of Words)
-```
+``` Python
 from sklearn.feature_extraction.text import CountVectorizer
 TF=CountVectorizer() #각 텍스트에서 단어 출현 횟수를 카운팅한 벡터
 TF_matrix=TF.fit_transform(new_str_emails3) #코퍼스로부터 각 단어의 빈도 수를 기록
