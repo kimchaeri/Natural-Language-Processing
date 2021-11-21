@@ -68,6 +68,15 @@ data = pd.read_csv(data_path,encoding='latin1')
 data.drop_duplicates(subset=['des'],inplace=True, keep='first') #ex.3개가 중복되었을 때 첫 번째것만 남기고 나머지 제거(keep='first') #last or False
 ``` 
 #### 4. 전처리
+  4-(1). 토큰화
+
+  4-(2). 품사 태깅
+
+  4-(3). 명사 추출
+
+  4-(4). 표제어 추출(Lemmatization)
+
+  4-(5). 불용어(stop words) 제거
 ``` 
 import nltk
 from nltk.tokenize import word_tokenize
@@ -113,17 +122,48 @@ for email in emails:
         
     i+=1
 ```
-  4-(1). 토큰화
-
-  4-(2). 품사 태깅
-
-  4-(3). 명사 추출
-
-  4-(4). 표제어 추출(Lemmatization)
-
-  4-(5). 불용어(stop words) 제거
-
 #### 5. 문서를 숫자 벡터로 변환(Bag of Words)
+```
+from sklearn.feature_extraction.text import CountVectorizer
+TF=CountVectorizer() #각 텍스트에서 단어 출현 횟수를 카운팅한 벡터
+TF_matrix=TF.fit_transform(new_str_emails3) #코퍼스로부터 각 단어의 빈도 수를 기록
+```
 #### 6. 지도 학습
+```
+from sklearn.model_selection import train_test_split
+
+train_x, test_x, train_y, test_y = train_test_split(TF_matrix.drop(['Y'],axis=1),TF_matrix['Y'],test_size=0.30, stratify=Y, random_state=2313, shuffle=True)
+#입력값으로는 원본 데이터의 x,y
+#test_size: 테스트 셋 구성의 비율
+#shuffle: default=True 입니다. split을 해주기 이전에 섞을건지 여부
+#stratify: default=None 입니다. classification을 다룰 때 매우 중요한 옵션값, stratify 값을 target으로 지정해주면 각각의 class 비율(ratio)을 train / validation에 유지해 줍니다. (한 쪽에 쏠려서 분배되는 것을 방지합니다) 만약 이 옵션을 지정해 주지 않고 classification 문제를 다룬다면, 성능의 차이가 많이 날 수 있습니다.
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import confusion_matrix,accuracy_score,balanced_accuracy_score
+from sklearn.metrics import classification_report,recall_score
+
+RF_test_pred=RF.predict(test_x)
+GB_test_pred=GB.predict(test_x)
+LR_test_pred=LR.predict(test_x)
+
+print('RF_confusion',confusion_matrix(test_y,RF_test_pred))
+print('RF_accuracy',accuracy_score(test_y,RF_test_pred))
+print('RF_recall',recall_score(test_y,RF_test_pred))
+print('RF_balanced',balanced_accuracy_score(test_y,RF_test_pred))
+print('##############################################################')
+
+print('GB_confusion',confusion_matrix(test_y,GB_test_pred))
+print('GB_accuracy',accuracy_score(test_y,GB_test_pred))
+print('GB_recall',recall_score(test_y,GB_test_pred))
+print('GB_balanced',balanced_accuracy_score(test_y,GB_test_pred))
+print('##############################################################')
+
+print('LR_confusion',confusion_matrix(test_y,LR_test_pred))
+print('LR_accuracy',accuracy_score(test_y,LR_test_pred))
+print('LR_recall',recall_score(test_y,LR_test_pred))
+print('LR_balanced',balanced_accuracy_score(test_y,LR_test_pred))
+print('##############################################################')
+```
 ## Word2Vec
 
