@@ -50,8 +50,8 @@ from nltk.corpus import stopwords
 ## Spam Email Text Data Analysis
 ### 1. 라이브러리 호출
 ### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
-3. 결측값(null), 중복값 제거
-4. 전처리
+### 3. 결측값(null), 중복값 제거
+### 4. 전처리
 
   4-(1). 토큰화
 
@@ -63,7 +63,7 @@ from nltk.corpus import stopwords
 
   4-(5). 불용어(stop words) 제거
 
-5. 문서를 숫자 벡터로 변환(Bag of Words)
-6. 지도 
+### 5. 문서를 숫자 벡터로 변환(Bag of Words)
+### 6. 지도 
 ## Word2Vec
 
