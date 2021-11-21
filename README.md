@@ -1,6 +1,7 @@
 # Natural Language Processing(NLP) 수업 실습
 ## preprocessing1
 + 토큰화
+
 토큰이라는 단위로 말뭉치를 나누는 작업
 한국어에서 어절(띄어쓰기)기반 토큰화는 지양되고 있음->형태소 기반 토큰화
 
