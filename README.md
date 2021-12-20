@@ -268,3 +268,60 @@ from gensim.models import KeyedVectors
 import tensorflow
 from sklearn.model_selection import train_test_split
 ``` 
+#### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
+``` Python
+data_path = r'C:/Users/user/Desktop/딥러닝프레임워크_박성호/spam.csv'
+data = pd.read_csv(data_path,encoding='latin1')
+``` 
+#### 3. 결측값(null), 중복값 제거
+``` Python
+data.drop_duplicates(subset=['des'],inplace=True, keep='first') #ex.3개가 중복되었을 때 첫 번째것만 남기고 나머지 제거(keep='first') #last or False
+``` 
+#### 4. 전처리
+  4-(1). 대문자->소문자
+
+  4-(2). 특수 기호, 구두점 제거
+
+  4-(3). 토큰화
+
+``` Python
+#(1)
+#대문자->소문자
+#특수기호 구두점 등 제거
+
+normalized_text=[] #전처리된 텍스트
+
+for string in data['des']:
+    tokens=re.sub(r"[^a-z0-9]+"," ",string.lower()) #대문자를 소문자로 바꾼후, 스팸이메일에서 소문자영어나 숫자가 아닌경우 빈 공간으로
+    normalized_text.append(tokens)
+    
+#(2)
+#단어 토큰화
+
+#normalized_text에서 각각의 이메일을 sentence로 받아서 work_tokenize시키겠다는 것
+result=[word_tokenize(sentence) for sentence in normalized_text]
+```
+#### 5. Pretrained된 모델 사용, Transfer Learning
+``` Python
+#LOAD pre-trained key vector
+#model을 load한 것이 아니고 Embedding vector만 load
+#limit=단어수 조정(빅데이터의 경우)
+PreTrainedKeyvector=KeyedVectors.load_word2vec_format(
+    googleNews_filepath, binary=True, limit=5000 #5000개의 단어만 불러올 것
+)
+
+#Fine tuning 할 새로운 Word2Vec 모델 생성
+#PreTrainedKeyvector와 'vector_size'가 같은 word2vec model을 생성
+#workers=-1 가용할 수 있는 모든 코어 수
+TransferedModel=Word2Vec(size=PreTrainedKeyvector.vector_size,min_count=1, workers=-1)
+
+#단어 생성(build_vocab) by PreTrainedKeyvector word Vocabulary
+#TransferedModel.build_vocab input:
+#[[]] #list of list
+TransferedModel.build_vocab([PreTrainedKeyvector.vocab.keys()])
+
+#주어진 데이터로 새로운 모델의 단어 추가
+#update parameter를 True로 설정
+TransferedModel.build_vocab(result,update=True)
+```
+
