@@ -248,3 +248,4 @@ TransferedModel2.build_vocab(result,update=True)
 TransferedModel2.train(result,total_examples=len(result),epochs=1)
 ```
 
+## Text Classification by Word2Vec and CNN
