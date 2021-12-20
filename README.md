@@ -266,6 +266,7 @@ from gensim.models import KeyedVectors
 
 #Neural Network
 import tensorflow
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 ``` 
 #### 2. spam.csv(스팸 메일을 가지고 있는 리스트)파일 불러오기
@@ -323,5 +324,96 @@ TransferedModel.build_vocab([PreTrainedKeyvector.vocab.keys()])
 #주어진 데이터로 새로운 모델의 단어 추가
 #update parameter를 True로 설정
 TransferedModel.build_vocab(result,update=True)
-```
 
+#Pretrained 모델의 학습 파라미터를 기반으로 새로운 모델의 학습 파라미터 초기화
+#학습파라미터를 'googleNews_filepath'에 있는 값으로 모두 업데이트해줌
+#lockf=0.0 : 보통은 학습 파라미터를 update하지 못하도록 lock이 걸려있음
+#lockf=1 : 학습 파라미터를 update하도록 lock 해제
+TransferedModel.intersect_word2vec_format(
+    googleNews_filepath, binary=True, lockf=1.0
+)
+
+#모델 업데이트 - Fine Tuning
+#새로운 데이터 기반의 학습
+#epochs이 많으면 많을수록 학습을 많이 하는 것
+TransferedModel.train(result, total_examples=len(result), epochs=100)
+```
+#### 6. Text 정수화
+``` Python
+word_to_id = dict()
+id_to_word = dict()
+all_words=TransferedModel.wv.vocab.keys()
+
+for word in all_words:
+    if word not in word_to_id:
+        new_id=len(word_to_id)+1
+        word_to_id[word]=new_id
+        id_to_word[new_id]=word
+        
+#각 단어를 이미 정해진 인덱스로 변환
+encoded_result=[]
+for sent in result:
+    temp_id=[]
+    for word in sent:
+        temp_id.append(word_to_id[word])
+    encoded_result.append(temp_id)
+```
+### 7. 고정된 길이 padding
+``` Python
+#post: 뒷 부분에 0을 채워넣겠다는 것
+#maxlen: 최대 길이
+padded_encoded_result=pad_sequences(encoded_result,padding='post')
+```
+### 8. Train, Test 분리
+``` Python
+#indices: 분할시킬 데이터를 입력
+#test_size: 테스트 셋 구성의 비율
+#shuffle: 뒤죽 박죽 섞는 것
+#random_state: 세트를 섞을 때 해당 int 값을 보고 섞음
+#stratify: 이 값을 target으로 지정해주면 각각의 class 비율(ratio)을 train/validation에 유지해 줍니다.(한 쪽에 쏠려서 분배되는 것을 방지)
+indices_train, indices_test = train_test_split(indices, test_size=0.2, shuffle=True, random_state=0, stratify=Y)
+
+train_X=padded_encoded_result[indices_train]
+train_Y=Y.iloc[indices_train]
+
+test_X=padded_encoded_result[indices_test]
+test_Y=Y.iloc[indices_test]
+```
+### 9. CNN 구축
+``` Python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers import Conv1D#Conv2D
+from tensorflow.keras.layers import GlobalMaxPooling1D
+
+#vocab_size: row의 길이
+#TransferedModel.wv.vector_size: column의 길이
+#원래 weights를 알아서 학습시키는 것이지만 우리는 이미 있는것을 가져다 쓸 것
+#trainable=False: embedding_matrix를 train시킬 것이냐 라고 했을 때 안한다는 것
+embedding_layer=Embedding(vocab_size, TransferedModel.wv.vector_size, weights=[embedding_matrix], input_length=max_len, trainable=False)
+
+#Architecture 구성
+#Conv1D로 하면 input에 맞게끔 너비가 결정, 높이만 결정하면 됨
+
+CNN=Sequential() #순서대로 구성하겠다
+CNN.add(embedding_layer)
+CNN.add(Conv1D(filters=50, kernel_size=1, activation='relu')) #필터의 개수 50개, kernel_size는 높이(1칸), kernel_size=1이면 190X1짜리가 50개 생김
+CNN.add(GlobalMaxPooling1D()) #가장 큰 값을 뽑아서 하나로 요약(50개 만들어짐)
+CNN.add(Flatten())
+CNN.add(Dense(1, activation='sigmoid')) #fully-connected->Dense, output이 한개
+print(CNN.summary())
+
+#학습 요소 구성
+#loss: 어떤 손실 함수를 쓸 것인지
+#optimizer: adam방식의 경사하강법 사용
+#metrics: 이 모델이 잘 구축되었는지 아닌지 볼 지표
+CNN.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+#x: Input
+#y: Output
+#epochs: 반복 횟수
+#w를 한 번 업데이트할 때 배치사이즈 만큼의 데이터를 사용
+CNN.fit(x=train_X, y=np.array(train_Y), epochs=1, verbose=1, batch_size=32, validation_data=(test_X, np.array(test_Y)))
+```
