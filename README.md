@@ -358,13 +358,13 @@ for sent in result:
         temp_id.append(word_to_id[word])
     encoded_result.append(temp_id)
 ```
-### 7. 고정된 길이 padding
+#### 7. 고정된 길이 padding
 ``` Python
 #post: 뒷 부분에 0을 채워넣겠다는 것
 #maxlen: 최대 길이
 padded_encoded_result=pad_sequences(encoded_result,padding='post')
 ```
-### 8. Train, Test 분리
+#### 8. Train, Test 분리
 ``` Python
 #indices: 분할시킬 데이터를 입력
 #test_size: 테스트 셋 구성의 비율
