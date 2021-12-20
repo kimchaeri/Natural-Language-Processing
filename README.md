@@ -417,3 +417,32 @@ CNN.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 #w를 한 번 업데이트할 때 배치사이즈 만큼의 데이터를 사용
 CNN.fit(x=train_X, y=np.array(train_Y), epochs=1, verbose=1, batch_size=32, validation_data=(test_X, np.array(test_Y)))
 ```
+## RNN
+#### 1. 라이브러리 호출
+``` Python
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import tensorflow 
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Dense, SimpleRNN
+```
+#### 2. RNN 구축
+``` Python
+embedding_layer=Embedding(vocab_size, 4, trainable=True, input_length=max_len) #4개짜리 크기의 벡터
+
+embedding_dim=4
+hidden_units=10
+
+RNN=Sequential()
+RNN.add(embedding_layer)
+RNN.add(SimpleRNN(units=hidden_units, activation='relu')) #units:히든 레이어의 히든 노드 개수
+RNN.add(Dense(vocab_size, activation='softmax')) #9개의 단어에 대한 확률값을 뱉어줌
+RNN.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) #멀티 클래스 문제기이 때문에 categorical_crossentropy 사용
+RNN.fit(X,y_cate, epochs=200, verbose=1)
+```
