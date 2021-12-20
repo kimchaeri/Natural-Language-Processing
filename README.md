@@ -379,7 +379,7 @@ train_Y=Y.iloc[indices_train]
 test_X=padded_encoded_result[indices_test]
 test_Y=Y.iloc[indices_test]
 ```
-### 9. CNN 구축
+#### 9. CNN 구축
 ``` Python
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
