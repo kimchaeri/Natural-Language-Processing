@@ -249,3 +249,22 @@ TransferedModel2.train(result,total_examples=len(result),epochs=1)
 ```
 
 ## Text Classification by Word2Vec and CNN
+#### 1. 라이브러리 호출
+``` Python
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+import re
+import nltk
+from nltk.tokenize import word_tokenize
+import time
+
+#Word2Vec
+from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
+
+#Neural Network
+import tensorflow
+from sklearn.model_selection import train_test_split
+``` 
